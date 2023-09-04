@@ -1,0 +1,15 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t narquette/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true narquette/react-test npm test
+
+after_sucess:
+  - docker build -t narquette/multi-client ./client
+  - docker build -t narquette/multi-nginx ./nginx
+  - docker build -t narquette/multi-server ./server
+  - docker build -t narquette/multi-worker ./worker
